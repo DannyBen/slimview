@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'slim'
+require 'sinatra'
+
+Slim::Engine.set_options pretty: true
+
+# Configure Sinatra
+set :bind, '0.0.0.0'
+set :port, 3000
+set :root, File.expand_path('..', __dir__)
+set :views, __dir__
+
+get '/*' do
+  page = params[:splat].first
+  halt 404 unless File.exist? "#{page}.slim"
+  slim page.to_sym
+end
+
