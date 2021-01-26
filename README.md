@@ -2,6 +2,12 @@
 
 ## Install
 
+Install dependencies:
+
+```
+$ gem install sinatra slim puma
+```
+
 Put the `slimview` file in your path and make it executable.
 
 ## Usage
