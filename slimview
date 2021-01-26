@@ -13,10 +13,12 @@ set :views, Dir.pwd
 
 get '/' do
   files = Dir["*.slim"]
-  files.map do |file|
+  result = ["<style>* { font-family: arial; text-align: center; font-size: 20px; line-height: 1.5; }</style>"]
+  files.each do |file|
     basename = File.basename file, ".slim"
-    %Q[<a href="#{basename}">#{basename}</a><br>]
-  end.join
+    result << %Q[<a href="#{basename}">#{basename}</a><br>]
+  end
+  result.join "\n"
 end
 
 get '/*' do
