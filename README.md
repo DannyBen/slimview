@@ -2,7 +2,7 @@
 
 ## Install
 
-Put the `slimview` file in your path and make it executable
+Put the `slimview` file in your path and make it executable.
 
 ## Usage
 

@@ -9,7 +9,15 @@ Slim::Engine.set_options pretty: true
 set :bind, '0.0.0.0'
 set :port, 3000
 set :root, File.expand_path('..', __dir__)
-set :views, __dir__
+set :views, Dir.pwd
+
+get '/' do
+  files = Dir["*.slim"]
+  files.map do |file|
+    basename = File.basename file, ".slim"
+    %Q[<a href="#{basename}">#{basename}</a><br>]
+  end.join
+end
 
 get '/*' do
   page = params[:splat].first
