@@ -12,6 +12,7 @@ set :public_folder, Dir.pwd
 
 get '/' do
   files = Dir["*.slim"]
+  redirect File.basename(files.first, '.slim') if files.count == 1 
   result = ["<style>* { font-family: arial; text-align: center; font-size: 20px; line-height: 1.5; }</style>"]
   files.each do |file|
     basename = File.basename file, ".slim"
