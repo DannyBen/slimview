@@ -5,7 +5,6 @@ require 'sinatra'
 
 Slim::Engine.set_options pretty: true
 
-
 set :bind, '0.0.0.0'
 set :port, ENV['PORT'] || 3000
 set :views, Dir.pwd
