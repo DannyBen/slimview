@@ -10,6 +10,12 @@ set :port, ENV['PORT'] || 3000
 set :views, Dir.pwd
 set :public_folder, Dir.pwd
 
+helpers do
+  def partial(template, params={})
+    slim "partials/#{template}".to_sym, params
+  end
+end
+
 get '/' do
   files = Dir["*.slim"]
   redirect File.basename(files.first, '.slim') if files.count == 1 
