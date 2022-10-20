@@ -10,6 +10,14 @@ $ gem install sinatra slim puma
 
 Put the `slimview` file in your path and make it executable.
 
+## Docker
+
+```
+$ docker run --rm -it -v $PWD:/docs -p 3000:3000 dannyben/slimview
+```
+
+[View image on Docker Hub](https://hub.docker.com/r/dannyben/slimview)
+
 ## Usage
 
 Run `slimview` in a folder that contains `*.slim` templates, and open your
