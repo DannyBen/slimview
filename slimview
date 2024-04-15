@@ -1,9 +1,27 @@
 #!/usr/bin/env ruby
-
+# Serve or save slim files
+#
+# Usage:
+#   slimview          # serve in current directory
+#   slimview save     # save all *.slim files as html
+#
 require 'slim'
-require 'sinatra'
 
 Slim::Engine.set_options pretty: true
+
+if ARGV[0] == 'save'
+  files = Dir["*.slim"]
+  files.each do |path|
+    slim_code = File.read path
+    html = Slim::Template.new { slim_code }.render
+    out_path = "#{File.basename(path, '.slim')}.html"
+    File.write out_path, html
+    puts "saved #{out_path}"
+  end
+  exit
+end
+
+require 'sinatra'
 
 set :bind, '0.0.0.0'
 set :port, ENV['PORT'] || 3000
