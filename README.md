@@ -1,6 +1,8 @@
 # Slimview
 
-A lightweight command-line tool and Ruby library for quickly previewing [Slim](https://slim-template.github.io/) templates in a local web server powered by [Sinatra](https://sinatrarb.com/).
+A lightweight command-line tool and Ruby library for quickly previewing
+[Slim](https://slim-template.github.io/) templates in a local web server
+powered by [Sinatra](https://sinatrarb.com/).
 
 ## Features
 
@@ -52,6 +54,12 @@ slimview
 
 # Serve from another folder on port 8080
 slimview --root app/views --port 8080
+
+# Serve with a custom assets directory
+slimview --root app/views --assets public/assets
+
+# Use environment variables instead of flags
+SLIMVIEW_ASSETS=public/assets SLIMVIEW_ROOT=app/views slimview
 ```
 
 ## Ruby API Usage
@@ -68,6 +76,10 @@ Slimview::Server.new.start
 server = Slimview::Server.new port: 4000, root: 'views/slim'
 server.start
 
+# Override the assets directory
+server = Slimview::Server.new root: 'views/slim', assets: 'public/assets'
+server.start
+
 # Pass locals (available as variables inside your Slim templates)
 server = Slimview::Server.new items: ['one', 'two'], title: 'Hello'
 server.start
@@ -76,10 +88,13 @@ server.start
 
 ## Notes
 
-- Templates are served from the directory specified by `--root` (or `SLIMVIEW_ROOT`).
-- Static files (images, CSS, JS) can be placed in an `assets/` subfolder.
+- Templates are served from the directory specified by `--root`
+  (or `SLIMVIEW_ROOT`).
+- Static files (images, CSS, JS) can be placed in an `assets/` directory and
+  overridden via `--assets` or `SLIMVIEW_ASSETS`.
 - Slim templates are automatically reloaded on each request in development mode.
-- The tool is intended for **local development and previewing**, not for production use.
+- The tool is intended for **local development and previewing**, not for
+  production use.
 
 
 ## License
