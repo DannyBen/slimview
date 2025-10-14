@@ -37,4 +37,13 @@ describe Slimview::App do
       expect(last_response.status).to eq(404)
     end
   end
+
+  describe 'GET /style.css' do
+    it 'serves assets from the configured directory' do
+      get '/style.css'
+
+      expect(last_response).to be_ok
+      expect(last_response.headers['Content-Type']).to include('text/css')
+    end
+  end
 end
