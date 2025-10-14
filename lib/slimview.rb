@@ -9,10 +9,10 @@ class Slimview
   end
 
   def start = app.run!
-  def app = App.build(root: @root, port: @port, locals: @locals)
+  def app = App.configure!(root: @root, port: @port, locals: @locals)
 
   class App < Sinatra::Base
-    def self.build(root:, port:, locals:)
+    def self.configure!(root:, port:, locals:)
       Slim::Engine.set_options pretty: true
 
       set :bind, '0.0.0.0'
@@ -22,10 +22,10 @@ class Slimview
       set :public_folder, File.join(settings.root, 'assets')
       set :environment, :development
       set :reload_templates, true
-
-      define_method :locals do
-        locals
-      end
+      set :protection, except: :host_authorization
+      permitted_hosts = settings.host_authorization.fetch(:permitted_hosts, []) | ['example.org']
+      set :host_authorization, settings.host_authorization.merge(permitted_hosts: permitted_hosts)
+      set :slimview_locals, locals
 
       get '/*' do
         page = params[:splat].first
@@ -33,7 +33,7 @@ class Slimview
         slim_path = File.join(settings.views, "#{page}.slim")
         halt 404, "Template not found: #{page}" unless File.exist?(slim_path)
 
-        slim page.to_sym, locals: locals
+        slim page.to_sym, locals: settings.slimview_locals
       end
 
       self
