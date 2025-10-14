@@ -3,7 +3,7 @@ require 'slim'
 
 module Slimview
   class App < Sinatra::Base
-    def self.configure!(root:, port:, locals:)
+    def self.configure!(root:, port:, assets:, locals:)
       Slim::Engine.set_options pretty: true
 
       views_path = File.expand_path(root, Dir.pwd)
@@ -12,7 +12,7 @@ module Slimview
       set :port, port
       set :views, views_path
       set :root, File.expand_path('.')
-      set :public_folder, File.join(settings.root, 'assets')
+      set :public_folder, assets
       set :environment, :development
       set :reload_templates, true
       set :protection, except: :host_authorization

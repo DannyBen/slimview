@@ -3,6 +3,13 @@ summary "Runfile tasks for building the Slimview gem"
 version Slimview::VERSION
 
 require 'debug'
+require 'slimview'
 
 import_gem 'runfile-tasks/gem'
 import 'debug'
+
+help 'Start the fixtures serve'
+action :serve do
+  server = Slimview::Server.new root: 'spec/fixtures/templates', secret: 'There is no spoon'
+  server.start
+end

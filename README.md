@@ -31,14 +31,17 @@ $ slimview --help
 Usage: slimview [options]
 
 Options:
-  --port PORT     Set the port to run the server on (default: 3000)
-  --root PATH     Set the root templates directory (default: ./templates)
-  --help, -h      Show this help message
-  --version, -v   Print version info
+  --port PORT       Set the port to run the server on (default: 3000)
+  --root PATH       Set the root templates directory (default: ./templates)
+  --assets PATH     Set the assets directory (default: <root>/assets)
+  --help, -h        Show this help message
+  --version, -v     Print version info
 
 Environment Variables:
-  SLIMVIEW_PORT   Set the port (default: 3000)
-  SLIMVIEW_ROOT   Set the root templates directory (default: ./templates)
+  SLIMVIEW_PORT     Set the port
+  SLIMVIEW_ROOT     Set the root templates directory
+  SLIMVIEW_ASSETS   Set the assets directory
+
 ```
 
 Example:
