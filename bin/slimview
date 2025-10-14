@@ -29,15 +29,15 @@ end
 port = nil
 root = nil
 
-if i = args.index '--port'
+if (i = args.index '--port')
   port = args[i + 1]
 end
 
-if i = args.index '--root'
+if (i = args.index '--root')
   root = args[i + 1]
 end
 
 port = port.to_i if port
 
-server = Slimview.new port: port, root: root
+server = Slimview::Server.new port: port, root: root
 server.start

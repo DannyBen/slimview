@@ -1,4 +1,4 @@
-require:
+plugins:
   - rubocop-performance
   - rubocop-rspec
 
@@ -12,3 +12,7 @@ AllCops:
   SuggestExtensions: false
   Exclude:
     - dev/**/*
+
+Metrics/AbcSize:
+  Exclude:
+    - lib/slimview/app.rb

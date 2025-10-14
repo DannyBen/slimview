@@ -59,14 +59,14 @@ You can also use Slimview programmatically from Ruby:
 require 'slimview'
 
 # Start the server with default port 3000 and default 'templates' root
-Slimview.new.start
+Slimview::Server.new.start
 
 # Customize port and templates root
-server = Slimview.new port: 4000, root: 'views/slim'
+server = Slimview::Server.new port: 4000, root: 'views/slim'
 server.start
 
 # Pass locals (available as variables inside your Slim templates)
-server = Slimview.new items: ['one', 'two'], title: 'Hello'
+server = Slimview::Server.new items: ['one', 'two'], title: 'Hello'
 server.start
 ```
 
