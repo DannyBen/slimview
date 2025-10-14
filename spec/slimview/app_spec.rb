@@ -1,6 +1,6 @@
 require 'rack/test'
 
-describe Slimview do
+describe Slimview::App do
   include Rack::Test::Methods
 
   let(:app) { Slimview::Server.new(**options).app }
