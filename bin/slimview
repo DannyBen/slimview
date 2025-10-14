@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+args = ARGV.dup
+
+if args.include?('--help') || args.include?('-h')
+  puts <<~HELP
+    Usage: slimview [options]
+
+    Options:
+      --port PORT     Set the port to run the server on (default: 3000)
+      --root PATH     Set the root templates directory (default: ./templates)
+      --help, -h      Show this help message
+      --version, -v   Print version info
+
+    Environment Variables:
+      SLIMVIEW_ROOT   Set the root templates directory
+      SLIMVIEW_PORT   Set the port
+
+  HELP
+  exit
+end
+
+require 'slimview'
+
+if args.include?('--version') || args.include?('-v')
+  puts Slimview::VERSION
+  exit
+end
+
+port = nil
+root = nil
+
+if i = args.index '--port'
+  port = args[i + 1]
+end
+
+if i = args.index '--root'
+  root = args[i + 1]
+end
+
+port = port.to_i if port
+
+server = Slimview.new port: port, root: root
+server.start

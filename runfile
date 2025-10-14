@@ -1,0 +1,5 @@
+title   "Slimview Runfile"
+summary "Runfile tasks for building the Slimview gem"
+version Slimview::VERSION
+
+import_gem 'runfile-tasks/gem'
