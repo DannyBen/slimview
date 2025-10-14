@@ -1,17 +1,84 @@
 # Slimview
 
-Command-line tool and library for quickly previewing Slim templates in a local web server
+A lightweight command-line tool and Ruby library for quickly previewing [Slim](https://slim-template.github.io/) templates in a local web server powered by [Sinatra](https://sinatrarb.com/).
 
-## Install
+## Features
 
-```console
+- Instantly preview `.slim` templates in your browser
+- Minimal setup - just point to a folder and go
+- Automatically reloads templates in development
+- Configurable port and root directory via flags or environment variables
+
+
+## Installation
+
+```bash
 gem install slimview
 ```
 
-## Usage (Command Line)
+Or add it to your `Gemfile`:
 
-Soon
+```ruby
+gem 'slimview'
+```
 
-## Usage (Ruby Library)
 
-Soon
+## Command-Line Usage
+
+```bash
+$ slimview --help
+
+Usage: slimview [options]
+
+Options:
+  --port PORT     Set the port to run the server on (default: 3000)
+  --root PATH     Set the root templates directory (default: ./templates)
+  --help, -h      Show this help message
+  --version, -v   Print version info
+
+Environment Variables:
+  SLIMVIEW_PORT   Set the port (default: 3000)
+  SLIMVIEW_ROOT   Set the root templates directory (default: ./templates)
+```
+
+Example:
+
+```bash
+# Serve Slim templates from ./templates at http://localhost:3000
+slimview
+
+# Serve from another folder on port 8080
+slimview --root app/views --port 8080
+```
+
+## Ruby API Usage
+
+You can also use Slimview programmatically from Ruby:
+
+```ruby
+require 'slimview'
+
+# Start the server with default port 3000 and default 'templates' root
+Slimview.new.start
+
+# Customize port and templates root
+server = Slimview.new port: 4000, root: 'views/slim'
+server.start
+
+# Pass locals (available as variables inside your Slim templates)
+server = Slimview.new items: ['one', 'two'], title: 'Hello'
+server.start
+```
+
+
+## Notes
+
+- Templates are served from the directory specified by `--root` (or `SLIMVIEW_ROOT`).
+- Static files (images, CSS, JS) can be placed in an `assets/` subfolder.
+- Slim templates are automatically reloaded on each request in development mode.
+- The tool is intended for **local development and previewing**, not for production use.
+
+
+## License
+
+MIT License © 2025
