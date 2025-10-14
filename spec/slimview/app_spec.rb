@@ -22,10 +22,11 @@ describe Slimview::App do
     end
 
     context 'with context variables' do
-      let(:context) { { secret: "There is no spoon" } }
+      let(:context) { { secret: 'There is no spoon' } }
+
       it 'makes the variables available in the template' do
         get '/secret'
-        expect(last_response.body).to include "There is no spoon"
+        expect(last_response.body).to include 'There is no spoon'
       end
     end
   end
