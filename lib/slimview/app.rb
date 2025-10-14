@@ -1,7 +1,7 @@
 require 'sinatra/base'
 require 'slim'
 
-class Slimview
+module Slimview
   class App < Sinatra::Base
     def self.configure!(root:, port:, locals:)
       Slim::Engine.set_options pretty: true

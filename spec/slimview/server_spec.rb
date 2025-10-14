@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Slimview do
+describe Slimview::Server do
   subject { described_class.new }
 
   describe '#initialize' do

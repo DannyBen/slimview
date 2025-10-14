@@ -3,7 +3,8 @@ require 'rack/test'
 describe Slimview do
   include Rack::Test::Methods
 
-  let(:app) { Slimview.new(root:, **context).app }
+  let(:app) { Slimview::Server.new(**options).app }
+  let(:options) { { root: root }.merge context }
   let(:root) { 'spec/fixtures/templates' }
   let(:context) { {} }
 
