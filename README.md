@@ -10,6 +10,8 @@ powered by [Sinatra](https://sinatrarb.com/).
 - Minimal setup - just point to a folder and go
 - Automatically reloads templates in development
 - Configurable port and root directory via flags or environment variables
+- Automatically wraps views with `layout.slim` when present
+- Render partial Slim templates via `== slim :other_template`
 
 
 ## Installation
