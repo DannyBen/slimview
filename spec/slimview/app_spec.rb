@@ -9,15 +9,25 @@ describe Slimview::App do
   let(:context) { {} }
 
   describe 'GET /' do
+    before { get '/' }
+
     it 'returns 200 OK' do
-      get '/'
       expect(last_response).to be_ok
+    end
+
+    it 'respects layout.slim' do
+      expect(last_response.body).to include 'Slimview layout is included'
+    end
+
+    it 'shows embedded slim partials' do
+      expect(last_response.body).to include 'This is a partial snippet'
     end
   end
 
   describe 'GET /secret' do
+    before { get '/secret' }
+
     it 'returns 200' do
-      get '/secret'
       expect(last_response).to be_ok
     end
 
@@ -25,23 +35,23 @@ describe Slimview::App do
       let(:context) { { secret: 'There is no spoon' } }
 
       it 'makes the variables available in the template' do
-        get '/secret'
         expect(last_response.body).to include 'There is no spoon'
       end
     end
   end
 
   describe 'GET /non_existent_template' do
+    before { get '/non_existent_template' }
+
     it 'returns 404 Not Found' do
-      get '/non_existent_template'
       expect(last_response.status).to eq(404)
     end
   end
 
   describe 'GET /style.css' do
-    it 'serves assets from the configured directory' do
-      get '/style.css'
+    before { get '/style.css' }
 
+    it 'serves assets from the configured directory' do
       expect(last_response).to be_ok
       expect(last_response.headers['Content-Type']).to include('text/css')
     end

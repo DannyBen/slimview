@@ -3,17 +3,23 @@ require 'spec_helper'
 describe Slimview::Server do
   subject { described_class.new }
 
-  describe '#initialize' do
-    it 'sets the default port to 3000' do
-      expect(subject.instance_variable_get(:@port)).to eq(3000)
-    end
+  describe '#app' do
+    it 'returns a configures App' do
+      expect(Slimview::App).to receive(:configure!)
+        .with(port: 3000, root: 'templates', assets: 'templates/assets', locals: {})
 
-    it 'sets the default root to "templates"' do
-      expect(subject.instance_variable_get(:@root)).to eq('templates')
+      subject.app
     end
+  end
 
-    it 'initializes with empty locals' do
-      expect(subject.instance_variable_get(:@locals)).to eq({})
+  describe '#start' do
+    let(:mock_app) { double Slimview::App, { run!: true } }
+
+    it 'calls app.start!' do
+      allow(subject).to receive(:app).and_return mock_app
+      expect(mock_app).to receive(:run!)
+
+      subject.start
     end
   end
 end
