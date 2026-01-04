@@ -6,11 +6,11 @@ if args.include?('--help') || args.include?('-h')
     Usage: slimview [options]
 
     Options:
-      --port PORT       Set the port to run the server on (default: 3000)
-      --root PATH       Set the root templates directory (default: ./templates)
-      --assets PATH     Set the assets directory (default: <root>/assets)
-      --help, -h        Show this help message
-      --version, -v     Print version info
+      -p, --port PORT     Set the port to run the server on (default: 3000)
+      -r, --root PATH     Set the root templates directory (default: ./templates)
+      -a, --assets PATH   Set the assets directory (default: <root>/assets)
+      -h, --help          Show this help message
+      -v, --version       Print version info
 
     Environment Variables:
       SLIMVIEW_PORT     Set the port
@@ -32,17 +32,18 @@ port = nil
 root = nil
 assets = nil
 
-if (i = args.index '--port')
-  port = args[i + 1]
+def fetch_arg(args, *flags)
+  flags.each do |flag|
+    if (index = args.index(flag))
+      return args[index + 1]
+    end
+  end
+  nil
 end
 
-if (i = args.index '--root')
-  root = args[i + 1]
-end
-
-if (i = args.index '--assets')
-  assets = args[i + 1]
-end
+port = fetch_arg(args, '--port', '-p')
+root = fetch_arg(args, '--root', '-r')
+assets = fetch_arg(args, '--assets', '-a')
 
 port = port.to_i if port
 
