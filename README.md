@@ -26,6 +26,27 @@ Or add it to your `Gemfile`:
 gem 'slimview'
 ```
 
+### Docker
+
+Slimview is also available as a docker image:
+
+```shell
+docker run --rm -it -v $PWD:/docs -p 3000:3000 dannyben/slimview
+```
+
+or as a docker compose service:
+
+```yaml
+services:
+  web:
+    build: .
+    image: dannyben/slimview
+    volumes: ["./:/docs"]
+    ports: ["3000:3000"]
+```
+
+[View image on Docker Hub](https://hub.docker.com/r/dannyben/slimview)
+
 
 ## Command-Line Usage
 
@@ -97,8 +118,3 @@ server.start
 - Slim templates are automatically reloaded on each request in development mode.
 - The tool is intended for **local development and previewing**, not for
   production use.
-
-
-## License
-
-MIT License © 2025
