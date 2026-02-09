@@ -1,5 +1,7 @@
 # Slimview
 
+![repocard](https://repocard.dannyben.com/svg/slimview.svg)
+
 A lightweight command-line tool and Ruby library for quickly previewing
 [Slim](https://slim-template.github.io/) templates in a local web server
 powered by [Sinatra](https://sinatrarb.com/).
