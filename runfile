@@ -6,6 +6,7 @@ require 'debug'
 require 'slimview'
 
 import_gem 'runfile-tasks/gem'
+import_gem 'runfile-tasks/docker', image: 'dannyben/slimview', version: Slimview::VERSION
 import 'debug'
 
 help 'Start the fixtures serve'
