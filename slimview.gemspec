@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rackup', '~> 2.2'
   s.add_dependency 'sinatra', '~> 4.1'
   s.add_dependency 'slim', '~> 5.2'
+  s.add_dependency 'coffee-script', '~> 2.4'
 
   s.metadata = {
     'bug_tracker_uri'       => 'https://github.com/dannyben/slimview/issues',
