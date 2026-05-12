@@ -1,54 +1,21 @@
 #!/usr/bin/env ruby
-args = ARGV.dup
-
-if args.include?('--help') || args.include?('-h')
-  puts <<~HELP
-    Usage: slimview [options]
-
-    Options:
-      -p, --port PORT        Set the port to run the server on (default: 3000)
-      -r, --root PATH        Set the root templates directory (default: ./templates)
-      -a, --assets PATH      Set the assets directory (default: <root>/assets)
-      -c, --component PATH   Set the components directory (default: <root>/components)
-      -h, --help             Show this help message
-      -v, --version          Print version info
-
-    Environment Variables:
-      SLIMVIEW_PORT          Set the port
-      SLIMVIEW_ROOT          Set the root templates directory
-      SLIMVIEW_ASSETS        Set the assets directory
-      SLIMVIEW_COMPONENTS    Set the components directory
-
-  HELP
-  exit
-end
-
 require 'slimview'
+require 'mister_bin'
 
-if args.include?('--version') || args.include?('-v')
-  puts Slimview::VERSION
-  exit
-end
+runner = MisterBin::Runner.new
+runner.route_all to: Slimview::Command
 
-port = nil
-root = nil
-assets = nil
-
-def fetch_arg(args, *flags)
-  flags.each do |flag|
-    if (index = args.index(flag))
-      return args[index + 1]
-    end
+begin
+  exit runner.run ARGV
+rescue Interrupt
+  puts "\nGoodbye"
+  exit 1
+rescue => e
+  if ENV['DEBUG']
+    puts e.backtrace.reverse
+    puts
   end
-  nil
+  puts "ERROR: #{e.class}"
+  puts e.message
+  exit 1
 end
-
-port = fetch_arg(args, '--port', '-p')
-root = fetch_arg(args, '--root', '-r')
-assets = fetch_arg(args, '--assets', '-a')
-components = fetch_arg(args, '--component', '--components', '-c')
-
-port = port.to_i if port
-
-server = Slimview::Server.new port: port, root: root, assets: assets, components: components
-server.start
