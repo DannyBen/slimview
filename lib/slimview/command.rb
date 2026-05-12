@@ -6,12 +6,13 @@ require 'slimview/app'
 
 module Slimview
   class Command < MisterBin::Command
+    DOT_ENTRIES = ['.', '..'].freeze
     TEMPLATE_ROOT = File.expand_path('templates', __dir__)
 
     summary 'Run a slim server'
     version VERSION
 
-    usage 'slimview [options]'
+    usage 'slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]'
     usage 'slimview init [PATH] [--force]'
 
     command 'init', 'Create a new baseline workspace'
@@ -64,7 +65,7 @@ module Slimview
       templates_target = File.join(target, 'templates')
 
       Dir.glob(File.join(TEMPLATE_ROOT, '**', '*'), File::FNM_DOTMATCH).each do |source|
-        next if ['.', '..'].include? File.basename(source)
+        next if DOT_ENTRIES.include? File.basename(source)
 
         destination = File.join(templates_target, source.delete_prefix("#{TEMPLATE_ROOT}/"))
 

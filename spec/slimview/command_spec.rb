@@ -11,7 +11,7 @@ describe Slimview::Command do
   end
 
   it 'starts the server without arguments' do
-    expect(Slimview::Server).to receive(:new)
+    allow(Slimview::Server).to receive(:new)
       .with(port: nil, root: nil, assets: nil, components: nil)
       .and_return server
     expect(server).to receive(:start)
@@ -20,7 +20,7 @@ describe Slimview::Command do
   end
 
   it 'passes configured options to the server' do
-    expect(Slimview::Server).to receive(:new)
+    allow(Slimview::Server).to receive(:new)
       .with(port: 4567, root: 'tmp/templates', assets: 'tmp/assets', components: 'tmp/components')
       .and_return server
     expect(server).to receive(:start)
@@ -29,7 +29,7 @@ describe Slimview::Command do
   end
 
   it 'supports short options' do
-    expect(Slimview::Server).to receive(:new)
+    allow(Slimview::Server).to receive(:new)
       .with(port: 4567, root: 'tmp/templates', assets: 'tmp/assets', components: 'tmp/components')
       .and_return server
     expect(server).to receive(:start)
@@ -42,7 +42,7 @@ describe Slimview::Command do
 
     exit_code = nil
     expect { exit_code = command.execute %w[--help] }
-      .to output(/Usage:\n  slimview \[options\]/).to_stdout
+      .to output(/Usage:\n  slimview \[--port PORT\] \[--root PATH\]/).to_stdout
     expect(exit_code).to eq 0
   end
 
@@ -56,39 +56,30 @@ describe Slimview::Command do
   end
 
   describe 'init' do
-    around do |example|
-      Dir.mktmpdir('slimview-command-spec') do |dir|
-        @tmpdir = dir
-        example.run
-      end
-    end
+    let(:tmpdir) { Dir.mktmpdir('slimview-command-spec') }
+    let(:target) { File.join(tmpdir, 'site') }
+
+    after { FileUtils.rm_rf tmpdir }
 
     it 'copies the starter workspace to the given path' do
-      target = File.join(@tmpdir, 'site')
-
       exit_code = nil
       expect { exit_code = command.execute ['init', target] }
         .to output(/Initialized Slimview workspace in #{Regexp.escape(target)}/).to_stdout
 
       expect(exit_code).to eq 0
-      expect(File).to exist File.join(target, 'templates/index.slim')
-      expect(File).to exist File.join(target, 'templates/layout.slim')
-      expect(File).to exist File.join(target, 'templates/components/card.slim')
-      expect(File).to exist File.join(target, 'templates/assets/style.css')
-      expect(File).to exist File.join(target, 'templates/assets/slimview.svg')
+      expect(created_files(target)).to eq starter_files
     end
 
     it 'defaults to the current directory' do
-      Dir.chdir(@tmpdir) do
+      Dir.chdir(tmpdir) do
         expect { command.execute %w[init] }
-          .to output(/Initialized Slimview workspace in #{Regexp.escape(@tmpdir)}/).to_stdout
+          .to output(/Initialized Slimview workspace in #{Regexp.escape(tmpdir)}/).to_stdout
       end
 
-      expect(File).to exist File.join(@tmpdir, 'templates/index.slim')
+      expect(File).to exist File.join(tmpdir, 'templates/index.slim')
     end
 
     it 'rejects a non-empty target directory' do
-      target = File.join(@tmpdir, 'site')
       FileUtils.mkdir_p target
       File.write File.join(target, 'existing.txt'), 'keep'
 
@@ -97,7 +88,6 @@ describe Slimview::Command do
     end
 
     it 'rejects an existing file target' do
-      target = File.join(@tmpdir, 'site')
       File.write target, 'not a directory'
 
       expect { command.execute ['init', target] }
@@ -105,7 +95,6 @@ describe Slimview::Command do
     end
 
     it 'copies starter files into a non-empty target with --force' do
-      target = File.join(@tmpdir, 'site')
       FileUtils.mkdir_p target
       File.write File.join(target, 'existing.txt'), 'keep'
 
@@ -114,6 +103,20 @@ describe Slimview::Command do
 
       expect(File.read(File.join(target, 'existing.txt'))).to eq 'keep'
       expect(File).to exist File.join(target, 'templates/index.slim')
+    end
+
+    def created_files(path)
+      Dir.chdir(path) { Dir['templates/**/*'].select { |entry| File.file? entry }.sort }
+    end
+
+    def starter_files
+      [
+        'templates/assets/slimview.svg',
+        'templates/assets/style.css',
+        'templates/components/card.slim',
+        'templates/index.slim',
+        'templates/layout.slim',
+      ]
     end
   end
 end

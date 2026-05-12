@@ -10,10 +10,13 @@ powered by [Sinatra](https://sinatrarb.com/).
 
 - Instantly preview `.slim` templates in your browser
 - Minimal setup - just point to a folder and go
+- Create a starter workspace with `slimview init`
 - Automatically reloads templates in development
-- Configurable port and root directory via flags or environment variables
+- Configurable port, templates, assets, and components directories via flags or
+  environment variables
 - Automatically wraps views with `layout.slim` when present
 - Render partial Slim templates via `== slim :other_template`
+- Render component templates via `== component 'card', title: 'Hello'`
 
 
 ## Installation
@@ -55,25 +58,66 @@ services:
 ```bash
 $ slimview --help
 
-Usage: slimview [options]
+Run a slim server
+
+Usage:
+  slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]
+  slimview init [PATH] [--force]
+
+Commands:
+  init
+    Create a new baseline workspace
 
 Options:
-  --port PORT       Set the port to run the server on (default: 3000)
-  --root PATH       Set the root templates directory (default: ./templates)
-  --assets PATH     Set the assets directory (default: <root>/assets)
-  --help, -h        Show this help message
-  --version, -v     Print version info
+  -p --port PORT
+    Set the port to run the server on (default: 3000)
+
+  -r --root PATH
+    Set the root templates directory (default: ./templates)
+
+  -a --assets PATH
+    Set the assets directory (default: <root>/assets)
+
+  -c --components PATH
+    Set the components directory (default: <root>/components)
+
+  -f --force
+    Copy files even when the target directory is not empty
+
+  -h --help
+    Show this help
+
+  --version
+    Show version number
+
+Parameters:
+  PATH
+    The workspace directory to initialize (default: .)
 
 Environment Variables:
-  SLIMVIEW_PORT     Set the port
-  SLIMVIEW_ROOT     Set the root templates directory
-  SLIMVIEW_ASSETS   Set the assets directory
+  SLIMVIEW_PORT
+    Set the port
+
+  SLIMVIEW_ROOT
+    Set the root templates directory
+
+  SLIMVIEW_ASSETS
+    Set the assets directory
+
+  SLIMVIEW_COMPONENTS
+    Set the components directory
 
 ```
 
 Example:
 
 ```bash
+# Create a minimal workspace in the current directory
+slimview init
+
+# Create a minimal workspace in another directory
+slimview init docs
+
 # Serve Slim templates from ./templates at http://localhost:3000
 slimview
 
@@ -83,8 +127,49 @@ slimview --root app/views --port 8080
 # Serve with a custom assets directory
 slimview --root app/views --assets public/assets
 
+# Serve with a custom components directory
+slimview --root app/views --components app/components
+
 # Use environment variables instead of flags
-SLIMVIEW_ASSETS=public/assets SLIMVIEW_ROOT=app/views slimview
+SLIMVIEW_ASSETS=public/assets SLIMVIEW_ROOT=app/views SLIMVIEW_COMPONENTS=app/components slimview
+```
+
+### Workspace Structure
+
+By default, Slimview expects this structure:
+
+```text
+templates/
+  index.slim
+  layout.slim
+  assets/
+    style.css
+  components/
+    card.slim
+```
+
+`slimview init [PATH]` creates this structure for you. It refuses to initialize
+a non-empty directory unless `--force` is passed.
+
+`--root` sets the templates directory. `--assets` defaults to `<root>/assets`,
+and `--components` defaults to `<root>/components`. Relative paths are resolved
+from the directory where you run `slimview`.
+
+### Components
+
+Components are regular Slim templates rendered without the page layout. They are
+loaded from the components directory and can receive locals:
+
+```slim
+/ templates/index.slim
+== component 'card', title: 'Hello', body: 'Rendered from a component'
+```
+
+```slim
+/ templates/components/card.slim
+.card
+  h2 = title
+  p = body
 ```
 
 ## Ruby API Usage
@@ -105,6 +190,10 @@ server.start
 server = Slimview::Server.new root: 'views/slim', assets: 'public/assets'
 server.start
 
+# Override the components directory
+server = Slimview::Server.new root: 'views/slim', components: 'views/components'
+server.start
+
 # Pass locals (available as variables inside your Slim templates)
 server = Slimview::Server.new items: ['one', 'two'], title: 'Hello'
 server.start
@@ -117,6 +206,8 @@ server.start
   (or `SLIMVIEW_ROOT`).
 - Static files (images, CSS, JS) can be placed in an `assets/` directory and
   overridden via `--assets` or `SLIMVIEW_ASSETS`.
+- Component templates can be placed in a `components/` directory and overridden
+  via `--components` or `SLIMVIEW_COMPONENTS`.
 - Slim templates are automatically reloaded on each request in development mode.
 - The tool is intended for **local development and previewing**, not for
   production use.
