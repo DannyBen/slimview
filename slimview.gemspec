@@ -9,17 +9,18 @@ Gem::Specification.new do |s|
   s.description = 'Command-line tool and library for quickly previewing Slim templates in a local web server'
   s.authors     = ['Danny Ben Shitrit']
   s.email       = 'db@dannyben.com'
-  s.files       = Dir['README.md', 'lib/**/*.rb']
+  s.files       = Dir['README.md', 'lib/**/*'].select { |path| File.file? path }
   s.executables = ['slimview']
   s.homepage    = 'https://github.com/DannyBen/slimview'
   s.license     = 'MIT'
   s.required_ruby_version = '>= 3.2'
 
+  s.add_dependency 'coffee-script', '~> 2.4'
+  s.add_dependency 'mister_bin', '~> 0.8'
   s.add_dependency 'puma', '~> 7.0'
   s.add_dependency 'rackup', '~> 2.2'
   s.add_dependency 'sinatra', '~> 4.1'
   s.add_dependency 'slim', '~> 5.2'
-  s.add_dependency 'coffee-script', '~> 2.4'
 
   s.metadata = {
     'bug_tracker_uri'       => 'https://github.com/dannyben/slimview/issues',

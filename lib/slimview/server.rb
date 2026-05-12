@@ -1,13 +1,14 @@
 module Slimview
   class Server
-    def initialize(port: nil, root: nil, assets: nil, **locals)
+    def initialize(port: nil, root: nil, assets: nil, components: nil, **locals)
       @port = port || ENV['SLIMVIEW_PORT']&.to_i || 3000
       @root = root || ENV['SLIMVIEW_ROOT'] || 'templates'
       @assets = assets || ENV['SLIMVIEW_ASSETS'] || "#{@root}/assets"
+      @components = components || ENV['SLIMVIEW_COMPONENTS'] || "#{@root}/components"
       @locals = locals
     end
 
     def start = app.run!
-    def app = App.configure!(port: @port, root: @root, assets: @assets, locals: @locals)
+    def app = App.configure!(port: @port, root: @root, assets: @assets, components: @components, locals: @locals)
   end
 end

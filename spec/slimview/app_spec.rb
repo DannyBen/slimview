@@ -8,6 +8,12 @@ describe Slimview::App do
   let(:root) { 'spec/fixtures/templates' }
   let(:context) { {} }
 
+  it 'resolves configured paths from the working directory' do
+    expect(app.settings.views).to eq File.expand_path(root, Dir.pwd)
+    expect(app.settings.public_folder).to eq File.expand_path("#{root}/assets", Dir.pwd)
+    expect(app.settings.slimview_components).to eq File.expand_path("#{root}/components", Dir.pwd)
+  end
+
   describe 'GET /' do
     before { get '/' }
 
@@ -54,6 +60,26 @@ describe Slimview::App do
     it 'serves assets from the configured directory' do
       expect(last_response).to be_ok
       expect(last_response.headers['Content-Type']).to include('text/css')
+    end
+  end
+
+  describe 'GET /component_test' do
+    before { get '/component_test' }
+
+    it 'renders components from the default components directory' do
+      expect(last_response).to be_ok
+      expect(last_response.body).to include 'Component OK'
+    end
+  end
+
+  describe 'GET /custom_component_test' do
+    let(:options) { { root: root, components: 'spec/fixtures/custom_components' }.merge context }
+
+    before { get '/custom_component_test' }
+
+    it 'renders components from the configured components directory' do
+      expect(last_response).to be_ok
+      expect(last_response.body).to include 'Custom OK'
     end
   end
 end
