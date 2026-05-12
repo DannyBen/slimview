@@ -6,9 +6,26 @@ describe Slimview::Server do
   describe '#app' do
     it 'returns a configures App' do
       expect(Slimview::App).to receive(:configure!)
-        .with(port: 3000, root: 'templates', assets: 'templates/assets', locals: {})
+        .with(port: 3000, root: 'templates', assets: 'templates/assets', components: 'templates/components', locals: {})
 
       subject.app
+    end
+
+    context 'with SLIMVIEW_COMPONENTS' do
+      around do |example|
+        previous_components = ENV['SLIMVIEW_COMPONENTS']
+        ENV['SLIMVIEW_COMPONENTS'] = 'custom/components'
+        example.run
+      ensure
+        ENV['SLIMVIEW_COMPONENTS'] = previous_components
+      end
+
+      it 'uses the configured components directory' do
+        expect(Slimview::App).to receive(:configure!)
+          .with(port: 3000, root: 'templates', assets: 'templates/assets', components: 'custom/components', locals: {})
+
+        subject.app
+      end
     end
   end
 

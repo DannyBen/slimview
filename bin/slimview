@@ -6,16 +6,18 @@ if args.include?('--help') || args.include?('-h')
     Usage: slimview [options]
 
     Options:
-      -p, --port PORT     Set the port to run the server on (default: 3000)
-      -r, --root PATH     Set the root templates directory (default: ./templates)
-      -a, --assets PATH   Set the assets directory (default: <root>/assets)
-      -h, --help          Show this help message
-      -v, --version       Print version info
+      -p, --port PORT        Set the port to run the server on (default: 3000)
+      -r, --root PATH        Set the root templates directory (default: ./templates)
+      -a, --assets PATH      Set the assets directory (default: <root>/assets)
+      -c, --component PATH   Set the components directory (default: <root>/components)
+      -h, --help             Show this help message
+      -v, --version          Print version info
 
     Environment Variables:
-      SLIMVIEW_PORT     Set the port
-      SLIMVIEW_ROOT     Set the root templates directory
-      SLIMVIEW_ASSETS   Set the assets directory
+      SLIMVIEW_PORT          Set the port
+      SLIMVIEW_ROOT          Set the root templates directory
+      SLIMVIEW_ASSETS        Set the assets directory
+      SLIMVIEW_COMPONENTS    Set the components directory
 
   HELP
   exit
@@ -44,8 +46,9 @@ end
 port = fetch_arg(args, '--port', '-p')
 root = fetch_arg(args, '--root', '-r')
 assets = fetch_arg(args, '--assets', '-a')
+components = fetch_arg(args, '--component', '--components', '-c')
 
 port = port.to_i if port
 
-server = Slimview::Server.new port: port, root: root, assets: assets
+server = Slimview::Server.new port: port, root: root, assets: assets, components: components
 server.start
