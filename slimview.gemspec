@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = 'Command-line tool and library for quickly previewing Slim templates in a local web server'
   s.authors     = ['Danny Ben Shitrit']
   s.email       = 'db@dannyben.com'
-  s.files       = Dir['README.md', 'lib/**/*.rb']
+  s.files       = Dir['README.md', 'lib/**/*'].select { |path| File.file? path }
   s.executables = ['slimview']
   s.homepage    = 'https://github.com/DannyBen/slimview'
   s.license     = 'MIT'
