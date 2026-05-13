@@ -4,7 +4,13 @@ require 'slim'
 module Slimview
   class App < Sinatra::Base
     class TemplateContext
-      def to_binding = binding
+      def self.to_binding
+        context_class = Class.new
+        context_class.class_eval <<~RUBY, __FILE__, __LINE__ + 1
+          def to_binding = binding
+        RUBY
+        context_class.new.to_binding
+      end
     end
 
     module TemplateHelpers
@@ -49,7 +55,7 @@ module Slimview
       context_path = File.join(settings.views, 'context.rb')
       return {} unless File.exist? context_path
 
-      context_binding = TemplateContext.new.to_binding
+      context_binding = TemplateContext.to_binding
       # rubocop:disable Security/Eval -- context.rb is trusted project Ruby, similar to a Rack config or Rakefile.
       eval File.read(context_path), context_binding, context_path
       # rubocop:enable Security/Eval

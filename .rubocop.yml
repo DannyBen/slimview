@@ -12,6 +12,7 @@ AllCops:
   SuggestExtensions: false
   Exclude:
     - dev/**/*
+    - tmp/**/*
 
 Metrics/AbcSize:
   Exclude:

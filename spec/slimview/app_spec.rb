@@ -1,4 +1,6 @@
 require 'rack/test'
+require 'fileutils'
+require 'tmpdir'
 
 describe Slimview::App do
   include Rack::Test::Methods
@@ -55,6 +57,39 @@ describe Slimview::App do
       expect(last_response.body).to include 'Loaded from context.rb'
       expect(last_response.body).to include 'First card'
       expect(last_response.body).to include 'Second card'
+    end
+  end
+
+  describe 'reloading context classes' do
+    let(:tmpdir) { Dir.mktmpdir('slimview-context-spec') }
+    let(:root) { File.join(tmpdir, 'templates') }
+
+    before do
+      FileUtils.mkdir_p root
+      File.write File.join(root, 'index.slim'), 'h1 = page.label'
+    end
+
+    after { FileUtils.rm_rf tmpdir }
+
+    it 'evaluates context.rb constants in a fresh context for each request' do
+      write_context 'First'
+      get '/'
+      expect(last_response.body).to include 'First'
+
+      write_context 'Second'
+      get '/'
+      expect(last_response.body).to include 'Second'
+      expect(last_response.body).not_to include 'First'
+    end
+
+    def write_context(label)
+      File.write File.join(root, 'context.rb'), <<~RUBY
+        class Page
+          def label = '#{label}'
+        end
+
+        page = Page.new
+      RUBY
     end
   end
 
