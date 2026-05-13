@@ -65,6 +65,7 @@ Usage:
   slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]
   slimview init [DIR] [--force]
   slimview save [FILENAME] [--root PATH] [--assets PATH] [--components PATH]
+  slimview --help | -h | --version
 
 Commands:
   init
