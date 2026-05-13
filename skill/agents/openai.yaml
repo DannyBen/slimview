@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slimview"
+  short_description: "Build and verify Slimview previews"
+  default_prompt: "Use $slimview to verify and debug this Slimview template project."

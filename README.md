@@ -55,6 +55,14 @@ services:
 [View image on Docker Hub](https://hub.docker.com/r/dannyben/slimview)
 
 
+## Agent Skill
+
+This repository includes a Slimview agent skill in [`skill/`](skill/). To use
+it, ask your agent to install the skill from
+<https://github.com/DannyBen/slimview/tree/master/skill>, or copy it to your
+agent's skills directory.
+
+
 ## Command-Line Usage
 
 ```bash
