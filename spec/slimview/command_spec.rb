@@ -5,6 +5,7 @@ describe Slimview::Command do
   subject(:command) { described_class.new }
 
   let(:server) { instance_double Slimview::Server }
+  let(:renderer) { instance_double Slimview::Renderer, render: '<h1>Rendered</h1>' }
 
   before do
     allow(server).to receive(:start)
@@ -118,6 +119,66 @@ describe Slimview::Command do
         'templates/index.slim',
         'templates/layout.slim',
       ]
+    end
+  end
+
+  describe 'save' do
+    let(:tmpdir) { Dir.mktmpdir('slimview-command-spec') }
+    let(:target) { File.join(tmpdir, 'index.html') }
+    let(:configured_save_args) do
+      [
+        'save', target,
+        '--root', 'tmp/templates',
+        '--assets', 'tmp/assets',
+        '--components', 'tmp/components'
+      ]
+    end
+
+    before do
+      allow(Slimview::Renderer).to receive(:new)
+        .with(root: nil, assets: nil, components: nil)
+        .and_return renderer
+    end
+
+    after { FileUtils.rm_rf tmpdir }
+
+    it 'saves rendered HTML to the given path' do
+      expect(command.execute(['save', target])).to eq 0
+      expect(File.read(target)).to eq '<h1>Rendered</h1>'
+    end
+
+    it 'defaults to stdout' do
+      expect { expect(command.execute(%w[save])).to eq 0 }
+        .to output("<h1>Rendered</h1>\n").to_stdout
+      expect(File).not_to exist target
+    end
+
+    it 'supports - as explicit stdout' do
+      expect { expect(command.execute(%w[save -])).to eq 0 }
+        .to output("<h1>Rendered</h1>\n").to_stdout
+      expect(File).not_to exist File.join(Dir.pwd, '-')
+    end
+
+    it 'passes configured paths to the renderer' do
+      allow(Slimview::Renderer).to receive(:new)
+        .with(root: 'tmp/templates', assets: 'tmp/assets', components: 'tmp/components')
+        .and_return renderer
+
+      expect(command.execute(configured_save_args)).to eq 0
+    end
+
+    it 'overwrites an existing output file' do
+      File.write target, 'existing'
+
+      expect(command.execute(['save', target])).to eq 0
+      expect(File.read(target)).to eq '<h1>Rendered</h1>'
+    end
+
+    it 'rejects a directory output path' do
+      FileUtils.mkdir_p target
+
+      expect { command.execute ['save', target] }
+        .to raise_error RuntimeError, "Path exists and is a directory: #{target}"
     end
   end
 end

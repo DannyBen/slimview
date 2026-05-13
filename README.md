@@ -64,10 +64,14 @@ Run a slim server
 Usage:
   slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]
   slimview init [PATH] [--force]
+  slimview save [PATH] [--root PATH] [--assets PATH] [--components PATH]
 
 Commands:
   init
     Create a new baseline workspace
+
+  save
+    Save rendered HTML to a file
 
 Options:
   -p --port PORT
@@ -93,7 +97,7 @@ Options:
 
 Parameters:
   PATH
-    The workspace directory to initialize (default: .)
+    The workspace directory to initialize, or HTML file to save (default: stdout)
 
 Environment Variables:
   SLIMVIEW_PORT
@@ -121,6 +125,15 @@ slimview init docs
 
 # Serve Slim templates from ./templates at http://localhost:3000
 slimview
+
+# Print the rendered index page HTML
+slimview save
+
+# Save the rendered index page to another file
+slimview save dist/index.html
+
+# Print the rendered index page HTML explicitly
+slimview save -
 
 # Serve from another folder on port 8080
 slimview --root app/views --port 8080
