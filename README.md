@@ -63,8 +63,8 @@ Run a slim server
 
 Usage:
   slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]
-  slimview init [PATH] [--force]
-  slimview save [PATH] [--root PATH] [--assets PATH] [--components PATH]
+  slimview init [DIR] [--force]
+  slimview save [FILENAME] [--root PATH] [--assets PATH] [--components PATH]
 
 Commands:
   init
@@ -96,8 +96,11 @@ Options:
     Show version number
 
 Parameters:
-  PATH
-    The workspace directory to initialize, or HTML file to save (default: stdout)
+  DIR
+    The workspace directory to initialize (default: .)
+
+  FILENAME
+    The HTML file to save (default: stdout)
 
 Environment Variables:
   SLIMVIEW_PORT
@@ -163,7 +166,7 @@ templates/
     card.slim
 ```
 
-`slimview init [PATH]` creates this structure for you. It refuses to initialize
+`slimview init [DIR]` creates this structure for you. It refuses to initialize
 a non-empty directory unless `--force` is passed.
 
 `--root` sets the templates directory. `--assets` defaults to `<root>/assets`,

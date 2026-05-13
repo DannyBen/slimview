@@ -14,8 +14,9 @@ module Slimview
     version VERSION
 
     usage 'slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]'
-    usage 'slimview init [PATH] [--force]'
-    usage 'slimview save [PATH] [--root PATH] [--assets PATH] [--components PATH]'
+    usage 'slimview init [DIR] [--force]'
+    usage 'slimview save [FILENAME] [--root PATH] [--assets PATH] [--components PATH]'
+    usage 'slimview --help | -h | --version'
 
     command 'init', 'Create a new baseline workspace'
     command 'save', 'Save rendered HTML to a file'
@@ -26,7 +27,8 @@ module Slimview
     option '-c --components PATH', 'Set the components directory (default: <root>/components)'
     option '-f --force', 'Copy files even when the target directory is not empty'
 
-    param 'PATH', 'The workspace directory to initialize, or HTML file to save (default: stdout)'
+    param 'DIR', 'The workspace directory to initialize (default: .)'
+    param 'FILENAME', 'The HTML file to save (default: stdout)'
 
     environment 'SLIMVIEW_PORT', 'Set the port'
     environment 'SLIMVIEW_ROOT', 'Set the root templates directory'
@@ -45,7 +47,7 @@ module Slimview
     end
 
     def init_command
-      target = File.expand_path(args['PATH'] || '.', Dir.pwd)
+      target = File.expand_path(args['DIR'] || '.', Dir.pwd)
       force = args['--force']
 
       if File.exist?(target) && !File.directory?(target)
@@ -63,7 +65,7 @@ module Slimview
     end
 
     def save_command
-      path = args['PATH']
+      path = args['FILENAME']
 
       root = args['--root']
       assets = args['--assets']
