@@ -19,20 +19,22 @@ module Slimview
       end
     end
 
-    def self.configure!(root:, port:, assets:, components:, locals:)
+    def self.configure!(**options)
       Slim::Engine.set_options pretty: true
 
-      configure_paths root, assets, components
-      configure_server port, locals
+      configure_paths options[:root], options[:assets], options[:components]
+      configure_server options[:port], options[:locals], options.fetch(:raise_errors, false)
       configure_routes
 
       self
     end
 
-    def self.configure_server(port, locals)
+    def self.configure_server(port, locals, raise_errors)
       set :bind, '0.0.0.0'
       set :port, port
       set :environment, :development
+      set :raise_errors, raise_errors
+      set :show_exceptions, !raise_errors
       set :reload_templates, true
       set :protection, except: :host_authorization
       set :host_authorization, permitted_hosts: []

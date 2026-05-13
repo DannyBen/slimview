@@ -15,11 +15,13 @@ module Slimview
 
     usage 'slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]'
     usage 'slimview init [DIR] [--force]'
-    usage 'slimview save [FILENAME] [--root PATH] [--assets PATH] [--components PATH]'
+    usage 'slimview check [--root PATH] [--assets PATH] [--components PATH]'
+    usage 'slimview render [FILENAME] [--root PATH] [--assets PATH] [--components PATH]'
     usage 'slimview --help | -h | --version'
 
+    command 'check', 'Check that the index page can render'
     command 'init', 'Create a new baseline workspace'
-    command 'save', 'Save rendered HTML to a file'
+    command 'render', 'Render the index page HTML'
 
     option '-p --port PORT', 'Set the port to run the server on (default: 3000)'
     option '-r --root PATH', 'Set the root templates directory (default: ./templates)'
@@ -28,7 +30,7 @@ module Slimview
     option '-f --force', 'Copy files even when the target directory is not empty'
 
     param 'DIR', 'The workspace directory to initialize (default: .)'
-    param 'FILENAME', 'The HTML file to save (default: stdout)'
+    param 'FILENAME', 'The HTML file to write (default: stdout)'
 
     environment 'SLIMVIEW_PORT', 'Set the port'
     environment 'SLIMVIEW_ROOT', 'Set the root templates directory'
@@ -64,14 +66,14 @@ module Slimview
       puts "Initialized Slimview workspace in #{target}"
     end
 
-    def save_command
+    def check_command
+      render_html
+      0
+    end
+
+    def render_command
       path = args['FILENAME']
-
-      root = args['--root']
-      assets = args['--assets']
-      components = args['--components']
-
-      html = Slimview::Renderer.new(root: root, assets: assets, components: components).render
+      html = render_html
 
       if path.nil? || path == '-'
         puts html
@@ -90,6 +92,14 @@ module Slimview
     end
 
   private
+
+    def render_html
+      root = args['--root']
+      assets = args['--assets']
+      components = args['--components']
+
+      Slimview::Renderer.new(root: root, assets: assets, components: components).render
+    end
 
     def copy_template_workspace(target)
       templates_target = File.join(target, 'templates')

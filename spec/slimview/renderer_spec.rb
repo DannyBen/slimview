@@ -13,6 +13,11 @@ describe Slimview::Renderer do
 
   it 'raises when the template does not exist' do
     expect { renderer.render '/missing' }
-      .to raise_error RuntimeError, 'Template not found: missing'
+      .to raise_error Slimview::RenderError, 'Render failed with HTTP 404: Template not found: missing'
+  end
+
+  it 'raises the original template exception instead of Sinatra HTML' do
+    expect { renderer.render '/broken' }
+      .to raise_error RuntimeError, 'Broken template'
   end
 end
