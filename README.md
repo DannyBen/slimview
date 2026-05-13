@@ -14,6 +14,7 @@ powered by [Sinatra](https://sinatrarb.com/).
 - Automatically reloads templates in development
 - Configurable port, templates, assets, and components directories via flags or
   environment variables
+- Load Ruby context data for templates from `context.rb`
 - Automatically wraps views with `layout.slim` when present
 - Render partial Slim templates via `== slim :other_template`
 - Render component templates via `== component 'card', title: 'Hello'`
@@ -140,6 +141,7 @@ By default, Slimview expects this structure:
 
 ```text
 templates/
+  context.rb
   index.slim
   layout.slim
   assets/
@@ -154,6 +156,66 @@ a non-empty directory unless `--force` is passed.
 `--root` sets the templates directory. `--assets` defaults to `<root>/assets`,
 and `--components` defaults to `<root>/components`. Relative paths are resolved
 from the directory where you run `slimview`.
+
+### Context
+
+Add `context.rb` to your templates directory when templates need shared data.
+Slimview evaluates this file before rendering each request, and local variables
+defined there become available in your Slim templates.
+
+```ruby
+# templates/context.rb
+cards = [
+  { title: 'Hello', body: 'Rendered from Ruby context' }
+]
+```
+
+The variables are then available directly by name:
+
+```slim
+/ templates/index.slim
+- cards.each do |card|
+  == component 'card', title: card[:title], body: card[:body]
+```
+
+This is useful as a Ruby-powered alternative to static data files. For example,
+you can load YAML and reshape it before rendering:
+
+```ruby
+# templates/context.rb
+require 'yaml'
+
+site = YAML.load_file('data/site.yml')
+pages = site.fetch('pages').sort_by { |page| page.fetch('title') }
+```
+
+You can also define small classes or helper objects when a template needs richer
+data than plain hashes:
+
+```ruby
+# templates/context.rb
+class Page
+  attr_reader :title, :path
+
+  def initialize(title, path)
+    @title = title
+    @path = path
+  end
+end
+
+pages = [
+  Page.new('Home', '/'),
+  Page.new('About', '/about')
+]
+```
+
+`context.rb` is trusted project Ruby, not a sandboxed configuration format. It
+can require libraries, read files, and define constants. For larger context
+objects, prefer project-specific names or modules to avoid top-level class name
+conflicts.
+
+When Slimview is used through the Ruby API, locals passed to
+`Slimview::Server.new` override locals with the same name from `context.rb`.
 
 ### Components
 

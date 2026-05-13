@@ -3,4 +3,5 @@ section.hero
   h1 Slimview is ready
   p Edit this file in templates/index.slim.
 
-== component 'card', title: 'Reusable component', body: 'This card lives in templates/components/card.slim.'
+- cards.each do |card|
+  == component 'card', title: card[:title], body: card[:body]

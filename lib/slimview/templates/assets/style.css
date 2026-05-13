@@ -39,13 +39,14 @@ p {
   border: 1px solid #d6d8cf;
   border-radius: 8px;
   background: #fff;
-}
+  margin-bottom: 10px;
 
-.card h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
-}
+  h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
 
-.card p {
-  margin: 0;
+  p {
+    margin: 0;
+  }
 }
