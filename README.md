@@ -11,6 +11,7 @@ powered by [Sinatra](https://sinatrarb.com/).
 - Instantly preview `.slim` templates in your browser
 - Minimal setup - just point to a folder and go
 - Create a starter workspace with `slimview init`
+- Check or render the index page from the command line
 - Automatically reloads templates in development
 - Configurable port, templates, assets, and components directories via flags or
   environment variables
@@ -54,6 +55,14 @@ services:
 [View image on Docker Hub](https://hub.docker.com/r/dannyben/slimview)
 
 
+## Agent Skill
+
+This repository includes a Slimview agent skill in [`skill/`](skill/). To use
+it, ask your agent to install the skill from
+<https://github.com/DannyBen/slimview/tree/master/skill>, or copy it to your
+agent's skills directory.
+
+
 ## Command-Line Usage
 
 ```bash
@@ -64,15 +73,19 @@ Run a slim server
 Usage:
   slimview [--port PORT] [--root PATH] [--assets PATH] [--components PATH]
   slimview init [DIR] [--force]
-  slimview save [FILENAME] [--root PATH] [--assets PATH] [--components PATH]
+  slimview check [--root PATH] [--assets PATH] [--components PATH]
+  slimview render [FILENAME] [--root PATH] [--assets PATH] [--components PATH]
   slimview --help | -h | --version
 
 Commands:
+  check
+    Check that the index page can render
+
   init
     Create a new baseline workspace
 
-  save
-    Save rendered HTML to a file
+  render
+    Render the index page HTML
 
 Options:
   -p --port PORT
@@ -101,7 +114,7 @@ Parameters:
     The workspace directory to initialize (default: .)
 
   FILENAME
-    The HTML file to save (default: stdout)
+    The HTML file to write (default: stdout)
 
 Environment Variables:
   SLIMVIEW_PORT
@@ -130,14 +143,17 @@ slimview init docs
 # Serve Slim templates from ./templates at http://localhost:3000
 slimview
 
-# Print the rendered index page HTML
-slimview save
+# Check that the index page can render without printing HTML
+slimview check
 
-# Save the rendered index page to another file
-slimview save dist/index.html
+# Print the rendered index page HTML
+slimview render
+
+# Write the rendered index page to another file
+slimview render dist/index.html
 
 # Print the rendered index page HTML explicitly
-slimview save -
+slimview render -
 
 # Serve from another folder on port 8080
 slimview --root app/views --port 8080
