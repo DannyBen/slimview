@@ -42,7 +42,19 @@ describe Slimview::App do
 
       it 'makes the variables available in the template' do
         expect(last_response.body).to include 'There is no spoon'
+        expect(last_response.body).not_to include 'Loaded secret from context.rb'
       end
+    end
+  end
+
+  describe 'GET /context_test' do
+    before { get '/context_test' }
+
+    it 'makes context.rb local variables available in the template' do
+      expect(last_response).to be_ok
+      expect(last_response.body).to include 'Loaded from context.rb'
+      expect(last_response.body).to include 'First card'
+      expect(last_response.body).to include 'Second card'
     end
   end
 

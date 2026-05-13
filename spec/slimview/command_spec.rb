@@ -114,6 +114,7 @@ describe Slimview::Command do
         'templates/assets/slimview.svg',
         'templates/assets/style.css',
         'templates/components/card.slim',
+        'templates/context.rb',
         'templates/index.slim',
         'templates/layout.slim',
       ]

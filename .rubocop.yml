@@ -16,3 +16,9 @@ AllCops:
 Metrics/AbcSize:
   Exclude:
     - lib/slimview/app.rb
+
+Lint/UselessAssignment:
+  Exclude:
+    # Template context files intentionally define locals consumed by Slim.
+    - lib/slimview/templates/context.rb
+    - spec/fixtures/templates/context.rb

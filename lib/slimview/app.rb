@@ -3,6 +3,10 @@ require 'slim'
 
 module Slimview
   class App < Sinatra::Base
+    class TemplateContext
+      def to_binding = binding
+    end
+
     module TemplateHelpers
       def component(path, **locals)
         slim path.to_sym, views: settings.slimview_components, layout: false, locals: locals
@@ -37,8 +41,26 @@ module Slimview
         slim_path = File.join(settings.views, "#{page}.slim")
         halt 404, "Template not found: #{page}" unless File.exist?(slim_path)
 
-        slim page.to_sym, locals: settings.slimview_locals
+        slim page.to_sym, locals: self.class.render_locals
       end
+    end
+
+    def self.context_locals
+      context_path = File.join(settings.views, 'context.rb')
+      return {} unless File.exist? context_path
+
+      context_binding = TemplateContext.new.to_binding
+      # rubocop:disable Security/Eval -- context.rb is trusted project Ruby, similar to a Rack config or Rakefile.
+      eval File.read(context_path), context_binding, context_path
+      # rubocop:enable Security/Eval
+
+      context_binding.local_variables.to_h do |name|
+        [name, context_binding.local_variable_get(name)]
+      end
+    end
+
+    def self.render_locals
+      context_locals.merge settings.slimview_locals
     end
 
     def self.configure_paths(root, assets, components)
